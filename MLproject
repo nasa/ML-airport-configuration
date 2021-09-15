@@ -1,0 +1,9 @@
+name: Airport Runway Configuration Prediction
+
+conda_env: conda.yaml
+
+entry_points:
+  main:
+    command: "kedro run"
+  dqs:
+    command: "kedro run --pipeline dqs"

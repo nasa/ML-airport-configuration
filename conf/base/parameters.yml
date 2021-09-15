@@ -1,0 +1,134 @@
+globals: ${globals}
+
+
+# MLFLOW
+mlflow:
+  tracking_uri: XXXXX
+  experiment_name: airport_configuration_prediction
+  run_name: XXXXX
+  modeler_name: XXXXX   
+
+# DATA HANDLING
+test_size: 0.2  # fraction for test set
+test_split_fcn: add_train_test_random_weeks
+random_seed: 12345
+stale_airport_config_th: 2 #hours
+min_airport_config_percent: 1 # threshold to remove infrequent configurations
+
+# PREDICTIONS
+prediction_lookahead: 360 # minutes
+prediction_delta: 30 # minutes
+
+# MODELS
+baseline: PropagateCurrentConfigModel
+metrics: [classification_report_by_lookahead_hour, misclassified_pseudo_levenshtein_by_lookahead_hour]
+
+model:
+  name: XGBClassifier
+  recursive_feature: airport_configuration_name_current
+  lookahead: 180 # minutes
+  model_params:
+    colsample_bytree: 0.2
+    learning_rate: 0.1
+    max_depth: 3
+    alpha: 10
+    n_estimators: 100
+    random_state: 0
+
+# TARGET
+target: airport_configuration_name_future
+type: categorical
+
+## INPUTs
+inputs:
+  timestamp:
+    core: True
+    type: datetime
+    encoder: timeofday
+    series: False
+  airport_configuration_name_current:
+    core: True
+    type: categorical
+    encoder: onehot,airport_configuration_encoder
+    series: False
+  arr_counts:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  dep_counts:
+      core: True
+      type: numeric
+      constraints :
+        min : 0
+      encoder: None
+      series: True
+  cloud:
+    core: True
+    type: categorical
+    encoder: onehot
+    series: True
+  cloud_ceiling:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  lightning_prob:
+    core: True
+    type: categorical
+    encoder: onehot
+    series: True
+  precip:
+    core: True
+    type: bool
+    encoder: None
+    series: True
+  temperature:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  visibility:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  wind_direction:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  wind_gust:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+  wind_speed:
+    core: True
+    type: numeric
+    constraints:
+      min: 0
+    encoder: None
+    series: True
+
+unit_tests:
+  run_id: f8af0c0db0c54d559bb5e9429c05fa43  #the run_id to be tested. If no run_id, the test will be on the latest run on the experiment. by default
+  input_data:
+    nodes_to_run:
+      pipeline: airport_config
+      pipeline_path: src.airport_config_prediction.pipelines.data_science.pipeline
+      nodes_name: [add_train_test,filter_configurations]
+      nodes_output: data2
+#    catalog_item: 'de_data_set@PKL'

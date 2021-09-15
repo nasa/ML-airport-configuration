@@ -1,0 +1,202 @@
+# Here you can define all your data sets by using simple YAML syntax.
+#
+# Documentation for this file format can be found in "The Data Catalog"
+# Link: https://kedro.readthedocs.io/en/stable/04_user_guide/04_data_catalog.html
+
+#A mapping between the aircraft type and engine and the weight
+
+aircraft_mapping@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/aircraft_types_mapping.csv
+
+#Lamp Weather data
+lamp_weather_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileDataSet
+  credentials: LAMP_db_credentials
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/LAMP_weather_query.sql
+  load_args:
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+#METAR Weather data
+Metar_weather_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileDataSet
+  credentials: METAR_db_credentials
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/METAR_weather_query.sql
+  load_args:
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+#tbd-warehouse,matm_flight_summary
+MFS_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileChunkedDataSet
+  credentials: ${globals.fuser_db_credentials}
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/matm_flight_summary_query.sql
+  load_args:
+    chunk_size_days: 1
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+# configs from D-ATIS
+# On int4: db name datis, table datis_parser_message
+configs_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileDataSet
+  credentials: configs_db_credentials
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/configs_data_query.sql
+  load_args:
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+
+# runways db
+runways_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileDataSet
+  credentials: runways_db_credentials
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/runways.sql
+  load_args:
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+
+lamp_weather_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.LAMP_data_set.csv
+  load_args:
+    parse_dates:
+    - forecast_timestamp
+    - timestamp
+
+Metar_weather_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.METAR_data_set.csv
+
+MFS_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.MFS_data_set.csv
+  load_args:
+    parse_dates:
+      - departure_stand_actual_time
+      - departure_runway_actual_time
+      - arrival_stand_actual_time
+      - arrival_runway_actual_time
+  versioned: false
+
+configs_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.configs_data_set.csv
+  load_args:
+    parse_dates:
+      - start_time
+  versioned: false
+
+runways_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.runways_data_set.csv
+  load_args:
+    parse_dates:
+      - departure_runway_actual_time
+      - arrival_runway_actual_time
+  versioned: false
+
+
+### TBFM
+TBFM_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileChunkedDataSet
+  credentials:  ${globals.fuser_db_credentials}
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/tbfm_query.sql
+  load_args:
+    chunk_size_days: 1
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+TBFM_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.TBFM_data_set.csv
+  versioned: false
+  load_args:
+    parse_dates: [
+      arrival_runway_sta,
+      timestamp,
+     ]
+    low_memory: False
+
+### TFM track data
+TFM_track_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileChunkedDataSet
+  credentials: ${globals.fuser_db_credentials}
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/tfms_query.sql
+  load_args:
+    chunk_size_days: 1
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+TFM_track_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.TFM_track_data_set.csv
+  versioned: false
+  load_args:
+    parse_dates: [
+      timestamp,
+      arrival_runway_estimated_time,
+    ]
+
+# First position data
+first_position_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileChunkedDataSet
+  credentials: ${globals.fuser_db_credentials}
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/first_position_query.sql
+  load_args:
+    chunk_size_days: 1
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+first_position_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.first_position_data_set.csv
+  versioned: false
+  load_args:
+    parse_dates: [
+      time_first_tracked,
+    ]
+
+ETD_data_set@DB:
+  type: data_services.kedro_extensions.io.sqlfile_dataset.SQLQueryFileChunkedDataSet
+  credentials: ${globals.fuser_db_credentials}
+  sqlfilepath: src/airport_config_prediction/pipelines/data_query_and_save/SQL/ETD.sql
+  load_args:
+    chunk_size_days: 1
+    params:
+      start_time: ${globals.start_time}
+      end_time: ${globals.end_time}
+      airport_icao: ${globals.airport_icao}
+
+ETD_data_set@CSV:
+  type: pandas.CSVDataSet
+  filepath: data/01_raw/${globals.airport_icao}_${globals.start_time}_${globals.end_time}.ETD_data_set.csv
+  versioned: false
+  load_args:
+    parse_dates: [
+      timestamp,
+      departure_runway_estimated_time
+    ]
+
+de_data_set@PKL:
+  type: pickle.PickleDataSet
+  filepath: data/05_model_input/${globals.airport_icao}.de_data_set.pkl
+  versioned: false

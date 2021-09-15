@@ -1,0 +1,4 @@
+include *.py *.yml *.md
+include MANIFEST.in
+recursive-include src *.py *.sql *.yml *.md
+include bin/*.*

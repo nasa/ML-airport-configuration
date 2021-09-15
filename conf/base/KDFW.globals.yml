@@ -1,0 +1,5 @@
+globals:
+  airport_icao: KDFW
+  start_time: 2019-08-01 08:00:00
+  end_time: 2019-12-31 08:00:00
+  fuser_db_credentials: tbd_warehouse_credentials

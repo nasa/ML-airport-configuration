@@ -1,0 +1,12 @@
+globals:
+  airport_icao: KJFK
+  tz_name: 'US/Eastern'
+  start_time: 2020-07-01
+  end_time: 2020-08-10
+  batch_mode:
+    batch_days: 20
+    overlap_days: 1
+    pipelines:
+    - airport_config_dqs
+    - airport_config_de
+  fuser_db_credentials: misc_warehouse_credentials # tbd_warehouse_credentials

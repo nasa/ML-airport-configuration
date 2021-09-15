@@ -1,0 +1,5 @@
+globals:
+  airport_icao: KIAH
+  start_time: 2019-08-15 08:00:00
+  end_time: 2019-09-16 08:00:00
+  fuser_db_credentials: tbd_warehouse_credentials
