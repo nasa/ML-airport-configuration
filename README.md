@@ -61,7 +61,7 @@ Implementing it required us to overwrite the `_create_config_loader` method in `
 If using Kedro's Jupyter notebook or IPython integrations, the overall `globals.yml` is always used (i.e., there is not currently any way to specify which airport-specific `<airport_icao>.globals.yml` to use when initiating the Jupyter notebook session).
 The overall `globals.yml` can be updated during a Jupyter or IPython session (e.g., to specify a different airport) if, after changing the file, the `%reload_kedro` command is executed in the Jupyter notebook or IPython console session.
 This will update the Kedro `context` variable to take into account the updated `globals.yml`.
-See the "Working with Kedro from notebooks or IPython" section below and the [relevant Kedro documentation](https://kedro.readthedocs.io/en/stable/04_user_guide/11_ipython.html) for additional information about Kedro's Jupyter and IPython capabilities.
+See the "Working with Kedro from notebooks or IPython" section below and the [relevant Kedro documentation](https://kedro.readthedocs.io/en/stable/11_tools_integration/02_ipython.html) for additional information about Kedro's Jupyter and IPython capabilities.
 
 *Parameters*
 
@@ -69,12 +69,12 @@ The `conf/base/parameters.yml` file contains any parameters that control various
 For example, the parameters file specifies which type of machine learning model should be used and what hyperparameters will control its training.
 You may wish to update some of these parameters.
 Items in `parameters.yml` that are surrounded by `${` and `}` will be imported from the `globals.yml`.
-[Kedro's configuration templating documentation](https://kedro.readthedocs.io/en/stable/04_user_guide/03_configuration.html#templating-configuration) provides additional information about templated configurations via `globals.yml`.
+[Kedro's configuration templating documentation](https://kedro.readthedocs.io/en/stable/04_kedro_project_setup/02_configuration.html#template-configuration) provides additional information about templated configurations via `globals.yml`.
 
 The MLflow parameters, previously set via environmental variables, are contained in the `parameters.yml` file, and will be used to specify the experiment_name, tracking_uri, etc. Example below:
    ```
      mlflow:
-       tracking_uri: http://machine_name:6000
+       tracking_uri: http://machine_name:port_number
        experiment_name: airport_configuration_prediction
        run_name: full_dataset
        modeler_name: name
@@ -86,11 +86,11 @@ The MLflow parameters, previously set via environmental variables, are contained
 
 Any data sets used in this Kedro project must be declared in the `conf/base/catalog.yml` "data catalog."
 There should not be any reason for you to update this data catalog, but it contains items surrounded by `${` and `}` that will be imported from the `globals.yml` specified for a particular run.
-[Kedro's configuration templating documentation](https://kedro.readthedocs.io/en/stable/04_user_guide/03_configuration.html#templating-configuration) provides additional information.
+[Kedro's configuration templating documentation](https://kedro.readthedocs.io/en/stable/04_kedro_project_setup/02_configuration.html#template-configuration) provides additional information.
 
 *Kedro Nodes & Pipelines*
 
-[Kedro pipelines](https://kedro.readthedocs.io/en/stable/04_user_guide/06_pipelines.html) specify a directed acyclic graph of [Kedro nodes](https://kedro.readthedocs.io/en/stable/04_user_guide/05_nodes.html) to be run, with various data sets declared in the `catalog.yml` or parameters specified in `parameters.yml` serving as inputs.
+[Kedro pipelines](https://kedro.readthedocs.io/en/stable/02_get_started/03_hello_kedro.html#pipeline) specify a directed acyclic graph of [Kedro nodes](https://kedro.readthedocs.io/en/stable/02_get_started/03_hello_kedro.html#node) to be run, with various data sets declared in the `catalog.yml` or parameters specified in `parameters.yml` serving as inputs.
 Other than parameters or data sets declared in the data catalog, model inputs can be names of objects that are output from other nodes, such as intermediate data sets or trained models.
 The overall project pipelines are defined in `src/airport_config_prediction/pipeline.py`.
 These are defined by combining partial pipelines defined in other places throughout the project.
@@ -177,7 +177,7 @@ kedro ipython
 
 Staring Jupyter or IPython this way executes a startup script in `.ipython/profile_default/startup/00-kedro-init.py`.
 This creates a Kedro `context` variable in scope; the `context` can be used to access the data catalog, parameters, execute pipelines or portions thereof, and more.
-See the [relevant Kedro documentation](https://kedro.readthedocs.io/en/stable/04_user_guide/11_ipython.html) for details.
+See the [relevant Kedro documentation](https://kedro.readthedocs.io/en/stable/11_tools_integration/02_ipython.html) for details.
 
 In each of these cases, the session uses the global settings (e.g., airport ICAO) in `conf/base/globals.yml` to populate various items in `parameters.yml` and `catalog.yml`.
 If you wish to adjust those global settings after starting up a Jupyter notebook or an IPython session, simply change the contents of `globals.yml` and run the `%reload_kedro` line magic command.
@@ -189,8 +189,48 @@ To use it, first install it in the project environment via pip.
 ```
 pip install kedro-viz
 ```
-Then, from the top-level `airport_config_prediction/` directory, visualize a pipeline by providing its name after the `--pipeline` command line interface command.
+Then, from the top-level `ML-airport-configuration/` directory, visualize a pipeline by providing its name after the `--pipeline` command line interface command.
 For example, the command below will launch a browser with an interactive visualization of the unimpeded ramp training and testing pipeline.
 ```
 kedro viz --pipeline airport_config_full
 ```
+
+
+## Copyright and Notices
+
+The ML-airport-configuration code is released under the [NASA Open Source Agreement Version 1.3 license](license.pdf)
+
+
+## Notices
+
+Copyright © 2021 United States Government as represented by the
+Administrator of the National Aeronautics and Space Administration. All
+Rights Reserved.
+
+### Disclaimers
+
+No Warranty: THE SUBJECT SOFTWARE IS PROVIDED "AS IS" WITHOUT ANY
+WARRANTY OF ANY KIND, EITHER EXPRESSED, IMPLIED, OR STATUTORY,
+INCLUDING, BUT NOT LIMITED TO, ANY WARRANTY THAT THE SUBJECT SOFTWARE
+WILL CONFORM TO SPECIFICATIONS, ANY IMPLIED WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, OR FREEDOM FROM
+INFRINGEMENT, ANY WARRANTY THAT THE SUBJECT SOFTWARE WILL BE ERROR FREE,
+OR ANY WARRANTY THAT DOCUMENTATION, IF PROVIDED, WILL CONFORM TO THE
+SUBJECT SOFTWARE. THIS AGREEMENT DOES NOT, IN ANY MANNER, CONSTITUTE AN
+ENDORSEMENT BY GOVERNMENT AGENCY OR ANY PRIOR RECIPIENT OF ANY RESULTS,
+RESULTING DESIGNS, HARDWARE, SOFTWARE PRODUCTS OR ANY OTHER APPLICATIONS
+RESULTING FROM USE OF THE SUBJECT SOFTWARE.  FURTHER, GOVERNMENT AGENCY
+DISCLAIMS ALL WARRANTIES AND LIABILITIES REGARDING THIRD-PARTY SOFTWARE,
+IF PRESENT IN THE ORIGINAL SOFTWARE, AND DISTRIBUTES IT "AS IS."
+
+Waiver and Indemnity: RECIPIENT AGREES TO WAIVE ANY AND ALL CLAIMS
+AGAINST THE UNITED STATES GOVERNMENT, ITS CONTRACTORS AND
+SUBCONTRACTORS, AS WELL AS ANY PRIOR RECIPIENT.  IF RECIPIENT'S USE OF
+THE SUBJECT SOFTWARE RESULTS IN ANY LIABILITIES, DEMANDS, DAMAGES,
+EXPENSES OR LOSSES ARISING FROM SUCH USE, INCLUDING ANY DAMAGES FROM
+PRODUCTS BASED ON, OR RESULTING FROM, RECIPIENT'S USE OF THE SUBJECT
+SOFTWARE, RECIPIENT SHALL INDEMNIFY AND HOLD HARMLESS THE UNITED STATES
+GOVERNMENT, ITS CONTRACTORS AND SUBCONTRACTORS, AS WELL AS ANY PRIOR
+RECIPIENT, TO THE EXTENT PERMITTED BY LAW.  RECIPIENT'S SOLE REMEDY FOR
+ANY SUCH MATTER SHALL BE THE IMMEDIATE, UNILATERAL TERMINATION OF THIS
+AGREEMENT.
