@@ -14,5 +14,5 @@ dependencies:
   - pip
   - pip:
       - mlflow==1.19
-      - data_services<1.0.2,>=1.0.1dev86
+      - git+https://github.com/nasa/ML-airport-data-services.git
       - xgboost==1.1.1
