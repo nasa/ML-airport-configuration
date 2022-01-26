@@ -45,8 +45,11 @@ def filtering_flights(bins_df, et_df, truncated_col, et_col):
     filter_flights = bins_df.merge(et_df, how='left', left_on='forecast_timestamp', right_on=truncated_col)
 
     # filter out records with prediction timestamp after NOW
-    dep_filter_flights = filter_flights[filter_flights.timestamp >= filter_flights[et_col]]
+    #dep_filter_flights = filter_flights[filter_flights.timestamp >= filter_flights[et_col]]
+    # AA :
+    filter_flights = filter_flights[filter_flights.timestamp >= filter_flights[et_col]]
 
+    
     # filter out gufis estimated to land 6 hours after NOW      #No need as it's already taken care of in the merge
     #filter_flights = filter_flights[(filter_flights.timestamp + timedelta(hours=parameters['LOOKAHEAD_TIME'])) >= filter_flights.departure_runway_estimated_time]
 

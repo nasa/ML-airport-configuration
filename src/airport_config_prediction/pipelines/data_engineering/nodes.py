@@ -165,7 +165,7 @@ def de_save(
     data_folder: str ='./data/05_model_input/'
 ):
     wind_gust_col_names = data.columns.str.startswith("wind_gust")
-    data.loc[:, wind_gust_col_names] = data.loc[:, wind_gust_col_names].replace('NG', '0').astype(int)
+    data.loc[:, wind_gust_col_names] = data.loc[:, wind_gust_col_names].fillna('0').replace('NG', '0').astype(int)
     if 'batch_mode' in params_globals:
 
         # Delete previous runs batch files for airport_icao

@@ -11,6 +11,8 @@ from airport_config_prediction.pipelines import data_engineering as de
 from airport_config_prediction.pipelines import data_science as ds
 #from .pipelines import test as airport_test
 
+from data_services.conda_environment_test import check_environment
+
 
 def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
     """Create the project's pipeline.
@@ -22,6 +24,8 @@ def create_pipelines(**kwargs) -> Dict[str, Pipeline]:
         A mapping from a pipeline name to a ``Pipeline`` object.
 
     """
+
+    check_environment()
 
     dqs_pipelines = dqs.create_pipelines()
     data_engineering_pipeline=de.create_airport_config_de_pipeline()

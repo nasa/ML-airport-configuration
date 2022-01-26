@@ -29,8 +29,36 @@ def train_model(
                                                     parameters['inputs'],
                                                     parameters['target'],)
 
+
     # Add wrapper to skip model and return None for invalid core features
-    filt_pipeline = FilterPipeline(recursive_pipeline, np.nan)
+    default_response = data['airport_configuration_name_current'].mode()[0]
+    lookaheads = list(range(parameters['prediction_delta'],
+                            parameters['prediction_delta']+parameters['prediction_lookahead'],
+                            parameters['prediction_delta']))
+    n_lookaheads = len(lookaheads)
+    default_response = {'value':np.array([default_response]*n_lookaheads),
+                        'lookahead':np.array(lookaheads)}
+
+    # Create a default response function 
+    def func_creator(lookahead_list, default_val) :
+        npts = len(lookahead_list)
+        def func_default_response(X):
+            current_conf = X['airport_configuration_name_current'].copy()
+            prediction = current_conf.apply(
+                lambda x : {'value':np.array([x]*npts),
+                            'lookahead':np.array(lookahead_list)})
+            na_conf = current_conf.isna()
+            prediction.loc[na_conf] = [default_val]*(na_conf.sum()) # use the most common if not defined
+            prediction = prediction.values # to return an array
+            # Return a single value if only 1 element array to match a singular default value
+            if (len(prediction) == 1) :
+                return prediction[0] # .iloc[0] if returning a pd.Series
+            else :
+                return prediction
+        return func_default_response
+    
+    filt_pipeline = FilterPipeline(recursive_pipeline, func_creator(lookaheads, default_response))
+    
     features = get_features_df(data.columns, parameters['inputs'])
     missing_values = [np.nan, None, '']
     for i in range(len(features['name'])):
@@ -266,7 +294,7 @@ def filter_configurations(
 
     log = logging.getLogger(__name__)
     log.info('Kept {:.2f}% of rows when removing configurations active less than {} percent'.format(
-        len(data.index) / n_input_rows, 100 * parameters['min_airport_config_percent']))
+        len(data.index) / n_input_rows * 100.0, parameters['min_airport_config_percent']))
     log.info('Kept {} configurations from {}'.format(len(keep_configs),n_input_configs))
 
     for i in range(data.shape[0]):

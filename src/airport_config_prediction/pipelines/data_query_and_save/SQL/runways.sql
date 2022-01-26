@@ -4,7 +4,8 @@ select
     arrival_runway_actual,
     departure_runway_actual_time,
     departure_runway_actual
-from runway_actuals
-where (airport_id = :airport_icao and arrival_runway_actual_time between :start_time and :end_time )or
-(airport_id = :airport_icao and departure_runway_actual_time between :start_time and :end_time)
+from runways
+where (arrival_aerodrome_iata_name = :airport_iata and arrival_runway_actual_time between :start_time and :end_time ) or
+(departure_aerodrome_iata_name = :airport_iata and departure_runway_actual_time between :start_time and :end_time) and
+(points_on_runway = :surf_surv_avail)
 order by arrival_runway_actual_time, departure_runway_actual_time

@@ -11,6 +11,8 @@ dependencies:
   - pandas=1.1.*
   - numpy=1.19.*
   - psycopg2=2.8.5
+  - matplotlib=3.4.2
+  - ipython_genutils=0.2.0
   - pip
   - pip:
       - mlflow==1.19

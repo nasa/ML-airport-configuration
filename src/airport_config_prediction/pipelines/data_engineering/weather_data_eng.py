@@ -11,7 +11,7 @@ def weather_process_nulls(
     KCLT_weather_raw :pd.DataFrame,
     
 ) -> pd.DataFrame:
-    KCLT_weather_raw['wind_gust'] = KCLT_weather_raw['wind_gust'].replace('NG', 0).astype('int')
+    KCLT_weather_raw['wind_gust'] = KCLT_weather_raw['wind_gust'] .fillna(KCLT_weather_raw['wind_gust']) #.replace('NG', 0).astype('int')
     KCLT_weather_raw["wind_direction"] = KCLT_weather_raw["wind_direction"].fillna(KCLT_weather_raw["wind_direction"].expanding(min_periods=6).mean())
     KCLT_weather_raw["wind_speed"] = KCLT_weather_raw["wind_speed"].fillna(KCLT_weather_raw["wind_speed"].expanding(min_periods=6).mean())
     KCLT_weather_raw["cloud_ceiling"] = KCLT_weather_raw["cloud_ceiling"].fillna(method = 'ffill')
@@ -51,11 +51,11 @@ def weather_to_wide_sampled(
     # weather_data is sampled per prediction_delta, both timestamp and forecast_timestamp are adjusted
     #######
     # Sample times for timestamp
-    start_datetime = weather_data['timestamp'].min().ceil("H")
-    end_datetime = weather_data['timestamp'].max().floor("H")
+    start_datetime = weather_data['timestamp'].min().ceil("H") + np.timedelta64(30, 'm')
+    end_datetime = weather_data['timestamp'].max().floor("H") - np.timedelta64(30, 'm')
     time_df = sampling_times(parameters['prediction_delta'], start_datetime, end_datetime)
     time_df['timestamp_new'] = time_df['timestamp']
-    time_df['timestamp'] = time_df['timestamp'].dt.floor('H')
+    #time_df['timestamp'] = time_df['timestamp'].dt.floor('H')
 
     weather_data_sampled = pd.merge(time_df, weather_data, on="timestamp")
 

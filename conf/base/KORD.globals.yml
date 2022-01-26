@@ -2,8 +2,8 @@
 # the globals are used in both the dqs and de pipelines
 
 globals:
-  airport_icao: KDFW
-  airport_iata: DFW
+  airport_icao: KORD
+  airport_iata: ORD
   tz_name: 'US/Central'
   start_time: 2021-04-01
   end_time: 2021-09-30

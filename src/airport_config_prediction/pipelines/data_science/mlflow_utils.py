@@ -10,8 +10,8 @@ def init_mlflow(
     mlflow.set_experiment(parameters['mlflow']['experiment_name'])
     active_run = mlflow.start_run(run_name=parameters['mlflow']['run_name'])
     mlflow.set_tag('modeler_name', parameters['mlflow']['modeler_name'])
-    #mlflow.set_tag('airport_icao', globals['airport_icao']) # to add, after setting single airport run
-    #mlflow.log_param("features", list(inputs.keys()))
+    mlflow.set_tag('airport_icao', parameters['globals']['airport_icao']) # to add, after setting single airport run
+    mlflow.log_param("features", list(parameters['inputs'].keys()))
     core_features=[n for n in parameters["inputs"]
                    if parameters["inputs"][n]["core"] == True]
     mlflow.log_param("core_features", core_features)

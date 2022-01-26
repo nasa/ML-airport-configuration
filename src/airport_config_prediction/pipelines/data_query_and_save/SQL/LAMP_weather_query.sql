@@ -1,6 +1,6 @@
 with base as (
 SELECT  *
-    from weather
+    from lamp_weather
     where station = :airport_icao
     and posted_timestamp between (:start_time) and (:end_time)
 ),
@@ -8,16 +8,16 @@ cleaned as
  (
 select
     posted_timestamp as "timestamp",
-    obs_timestamp  as forecast_timestamp,
-    "TMP" as temperature,
-    "WDR" as wind_direction,
-    "WSP" as wind_speed,
-    "WGS" as wind_gust,
-    "CIG" as cloud_ceiling,
-    "VIS" as visibility,
-    "CLD" as cloud,
-    "LC1" as lightening_prob,
-    ("PCO" = 'Y') as precip
+    utc_timestamp  as forecast_timestamp,
+    "tmp" as temperature,
+    "wdr" as wind_direction,
+    "wsp" as wind_speed,
+    "wgs" as wind_gust,
+    "cig" as cloud_ceiling,
+    "vis" as visibility,
+    "cld" as cloud,
+    "lc1" as lightning_prob,
+    ("pco" = 'Y') as precip
 from base
 )
 select *

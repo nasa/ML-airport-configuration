@@ -1,5 +1,14 @@
 globals:
   airport_icao: KIAH
-  start_time: 2019-08-15 08:00:00
-  end_time: 2019-09-16 08:00:00
-  fuser_db_credentials: tbd_warehouse_credentials
+  airport_iata: IAH
+  tz_name: 'US/Central'
+  start_time: 2021-04-01
+  end_time: 2021-09-30
+  batch_mode:
+    batch_days: 10
+    overlap_days: 1
+    pipelines:
+    - airport_config_dqs
+    - airport_config_de
+  fuser_db_credentials: fuser_db_credentials 
+  surface_surveillance_available: True

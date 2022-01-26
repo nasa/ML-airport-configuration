@@ -5,8 +5,8 @@ globals: ${globals}
 mlflow:
   tracking_uri: XXXXX
   experiment_name: airport_configuration_prediction
-  run_name: XXXXX
-  modeler_name: XXXXX   
+  run_name:
+  modeler_name:    # needs to be updated per modeler; better in conf/local/?
 
 # DATA HANDLING
 test_size: 0.2  # fraction for test set

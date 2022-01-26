@@ -21,15 +21,6 @@ def create_pipelines(**kwargs):
                 outputs=None,
             ),
             node(
-                func=query_save_version_METAR,
-                inputs=[
-                    "Metar_weather_data_set@DB",
-                    "params:globals",
-                ],
-
-                outputs=None,
-            ),
-            node(
                 func=query_save_version_configs,
                 inputs=[
                     "configs_data_set@DB",

@@ -1,6 +1,9 @@
+# contains information about the the airports to train the model on
+# the globals are used in both the dqs and de pipelines
+
 globals:
-  airport_icao: KCLT
-  airport_iata: CLT
+  airport_icao: KATL
+  airport_iata: ATL
   tz_name: 'US/Eastern'
   start_time: 2021-04-01
   end_time: 2021-09-30
@@ -10,6 +13,6 @@ globals:
     pipelines:
     - airport_config_dqs
     - airport_config_de
-  fuser_db_credentials: fuser_db_credentials 
+  fuser_db_credentials: fuser_db_credentials  
   surface_surveillance_available: True
-
+  

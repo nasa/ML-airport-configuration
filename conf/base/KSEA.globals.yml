@@ -2,9 +2,9 @@
 # the globals are used in both the dqs and de pipelines
 
 globals:
-  airport_icao: KDFW
-  airport_iata: DFW
-  tz_name: 'US/Central'
+  airport_icao: KSEA
+  airport_iata: SEA
+  tz_name: 'US/Pacific'
   start_time: 2021-04-01
   end_time: 2021-09-30
   batch_mode:
